@@ -42,15 +42,15 @@ apt install -y curl wget bc jq sudo git
 ```
 
 ```
-git clone https://github.com/ITCYBERSECURITY-LEGION7-TEAM/0xUnMineAbleMiner.git
+git clone https://github.com/ITCYBERSECURITY-LEGION7-TEAM/0xXMRUnMineStableV4.git
 ```
 
 ```
-cd 0xUnMineAbleMiner
+cd 0xXMRUnMineStableV4
 ```
 
 ```
-sudo bash Unmineable
+sudo bash 0xUnmineable
 ```
 
 installation NC WALLET (DOMPET VIRTUAL)
