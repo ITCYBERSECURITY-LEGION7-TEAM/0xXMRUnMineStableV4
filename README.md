@@ -53,6 +53,21 @@ cd 0xXMRUnMineStableV4
 sudo bash 0xUnmineable
 ```
 
+
+Jika Mau Mining Baru Command Seperti ini
+```
+proot-distro login ubuntu
+```
+
+```
+cd 0xXMRUnMineStableV4
+```
+
+```
+sudo bash 0xUnmineable
+```
+
+
 installation NC WALLET (DOMPET VIRTUAL)
 
 OPEN YOUR BROWSER 
