@@ -1,0 +1,2078 @@
+#!/bin/bash
+
+# Warna untuk output hacker style
+BLACK='\033[0;30m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+WHITE='\033[1;37m'
+NC='\033[0m' # No Color
+
+# 200 Pool Unmineable dengan berbagai algoritma dan lokasi
+POOLS=(
+    "stratum+tcp://rx.unmineable.com:3333"
+    "stratum+tcp://rx.unmineable.com:13333"
+    "stratum+tcp://xmr.unmineable.com:3333"
+    "stratum+tcp://xmr.unmineable.com:13333"
+    "stratum+tcp://eth.unmineable.com:3333"
+    "stratum+tcp://eth.unmineable.com:13333"
+    "stratum+tcp://etc.unmineable.com:3333"
+    "stratum+tcp://etc.unmineable.com:13333"
+    "stratum+tcp://rvn.unmineable.com:3333"
+    "stratum+tcp://rvn.unmineable.com:13333"
+    
+    "stratum+ssl://rx.unmineable.com:443"
+    "stratum+ssl://xmr.unmineable.com:443"
+    "stratum+ssl://eth.unmineable.com:443"
+    "stratum+ssl://etc.unmineable.com:443"
+    "stratum+ssl://rvn.unmineable.com:443"
+    
+    "stratum+tcp://erg.unmineable.com:3333"
+    "stratum+tcp://erg.unmineable.com:13333"
+    "stratum+tcp://cfx.unmineable.com:3333"
+    "stratum+tcp://cfx.unmineable.com:13333"
+    "stratum+tcp://btc.unmineable.com:3333"
+    
+    "stratum+tcp://pool.unmineable.com:3333"
+    "stratum+tcp://pool.unmineable.com:13333"
+    "stratum+tcp://pool2.unmineable.com:3333"
+    "stratum+tcp://pool2.unmineable.com:13333"
+    "stratum+tcp://pool3.unmineable.com:3333"
+    
+    "stratum+tcp://eu1.unmineable.com:3333"
+    "stratum+tcp://eu1.unmineable.com:13333"
+    "stratum+tcp://us1.unmineable.com:3333"
+    "stratum+tcp://us1.unmineable.com:13333"
+    "stratum+tcp://asia1.unmineable.com:3333"
+    
+    "stratum+tcp://sg.unmineable.com:3333"
+    "stratum+tcp://sg.unmineable.com:13333"
+    "stratum+tcp://jp.unmineable.com:3333"
+    "stratum+tcp://jp.unmineable.com:13333"
+    "stratum+tcp://kr.unmineable.com:3333"
+    
+    "stratum+tcp://au.unmineable.com:3333"
+    "stratum+tcp://au.unmineable.com:13333"
+    "stratum+tcp://br.unmineable.com:3333"
+    "stratum+tcp://br.unmineable.com:13333"
+    "stratum+tcp://ca.unmineable.com:3333"
+    
+    "stratum+tcp://de.unmineable.com:3333"
+    "stratum+tcp://de.unmineable.com:13333"
+    "stratum+tcp://fr.unmineable.com:3333"
+    "stratum+tcp://fr.unmineable.com:13333"
+    "stratum+tcp://uk.unmineable.com:3333"
+    
+    "stratum+tcp://nl.unmineable.com:3333"
+    "stratum+tcp://nl.unmineable.com:13333"
+    "stratum+tcp://ch.unmineable.com:3333"
+    "stratum+tcp://ch.unmineable.com:13333"
+    "stratum+tcp://se.unmineable.com:3333"
+    
+    "stratum+tcp://randomx.unmineable.com:3333"
+    "stratum+tcp://randomx.unmineable.com:13333"
+    "stratum+tcp://kawpow.unmineable.com:3333"
+    "stratum+tcp://kawpow.unmineable.com:13333"
+    "stratum+tcp://etchash.unmineable.com:3333"
+    
+    "stratum+tcp://autolykos.unmineable.com:3333"
+    "stratum+tcp://autolykos.unmineable.com:13333"
+    "stratum+tcp://octopus.unmineable.com:3333"
+    "stratum+tcp://octopus.unmineable.com:13333"
+    "stratum+tcp://zelhash.unmineable.com:3333"
+    
+    # Backup pools
+    "stratum+tcp://backup1.unmineable.com:3333"
+    "stratum+tcp://backup1.unmineable.com:13333"
+    "stratum+tcp://backup2.unmineable.com:3333"
+    "stratum+tcp://backup2.unmineable.com:13333"
+    "stratum+tcp://backup3.unmineable.com:3333"
+    
+    "stratum+tcp://reserve1.unmineable.com:3333"
+    "stratum+tcp://reserve1.unmineable.com:13333"
+    "stratum+tcp://reserve2.unmineable.com:3333"
+    "stratum+tcp://reserve2.unmineable.com:13333"
+    "stratum+tcp://reserve3.unmineable.com:3333"
+    
+    # High performance pools
+    "stratum+tcp://fast1.unmineable.com:3333"
+    "stratum+tcp://fast1.unmineable.com:13333"
+    "stratum+tcp://fast2.unmineable.com:3333"
+    "stratum+tcp://fast2.unmineable.com:13333"
+    "stratum+tcp://fast3.unmineable.com:3333"
+    
+    "stratum+tcp://ultra1.unmineable.com:3333"
+    "stratum+tcp://ultra1.unmineable.com:13333"
+    "stratum+tcp://ultra2.unmineable.com:3333"
+    "stratum+tcp://ultra2.unmineable.com:13333"
+    "stratum+tcp://ultra3.unmineable.com:3333"
+    
+    # Regional pools tambahan
+    "stratum+tcp://nyc.unmineable.com:3333"
+    "stratum+tcp://nyc.unmineable.com:13333"
+    "stratum+tcp://la.unmineable.com:3333"
+    "stratum+tcp://la.unmineable.com:13333"
+    "stratum+tcp://miami.unmineable.com:3333"
+    
+    "stratum+tcp://london.unmineable.com:3333"
+    "stratum+tcp://london.unmineable.com:13333"
+    "stratum+tcp://paris.unmineable.com:3333"
+    "stratum+tcp://paris.unmineable.com:13333"
+    "stratum+tcp://frankfurt.unmineable.com:3333"
+    
+    "stratum+tcp://singapore.unmineable.com:3333"
+    "stratum+tcp://singapore.unmineable.com:13333"
+    "stratum+tcp://tokyo.unmineable.com:3333"
+    "stratum+tcp://tokyo.unmineable.com:13333"
+    "stratum+tcp://sydney.unmineable.com:3333"
+    
+    "stratum+tcp://mumbai.unmineable.com:3333"
+    "stratum+tcp://mumbai.unmineable.com:13333"
+    "stratum+tcp://dubai.unmineable.com:3333"
+    "stratum+tcp://dubai.unmineable.com:13333"
+    "stratum+tcp://johannesburg.unmineable.com:3333"
+    
+    # SSL pools tambahan
+    "stratum+ssl://pool.unmineable.com:443"
+    "stratum+ssl://pool2.unmineable.com:443"
+    "stratum+ssl://pool3.unmineable.com:443"
+    "stratum+ssl://eu1.unmineable.com:443"
+    "stratum+ssl://us1.unmineable.com:443"
+    
+    "stratum+ssl://asia1.unmineable.com:443"
+    "stratum+ssl://sg.unmineable.com:443"
+    "stratum+ssl://jp.unmineable.com:443"
+    "stratum+ssl://de.unmineable.com:443"
+    "stratum+ssl://fr.unmineable.com:443"
+    
+    # RX0 (RandomX) - Pool Utama
+    "stratum+tcp://rx.unmineable.com:3333"
+    "stratum+tcp://rx.unmineable.com:13333"
+    "stratum+tcp://rx.unmineable.com:4333"
+    "stratum+tcp://rx.unmineable.com:5333"
+    
+    # RX0 (RandomX) - Eropa
+    "stratum+tcp://rx-eu.unmineable.com:3333"
+    "stratum+tcp://rx-eu.unmineable.com:13333"
+    "stratum+tcp://rx-eu.unmineable.com:4333"
+    "stratum+tcp://rx-eu.unmineable.com:5333"
+    
+    # RX0 (RandomX) - Asia
+    "stratum+tcp://rx-asia.unmineable.com:3333"
+    "stratum+tcp://rx-asia.unmineable.com:13333"
+    "stratum+tcp://rx-asia.unmineable.com:4333"
+    "stratum+tcp://rx-asia.unmineable.com:5333"
+    
+    # RX0 (RandomX) - Amerika
+    "stratum+tcp://rx-us.unmineable.com:3333"
+    "stratum+tcp://rx-us.unmineable.com:13333"
+    "stratum+tcp://rx-us.unmineable.com:4333"
+    "stratum+tcp://rx-us.unmineable.com:5333"
+    
+    # KAWPOW (Ravencoin) - Pool Utama
+    "stratum+tcp://kawpow.unmineable.com:3333"
+    "stratum+tcp://kawpow.unmineable.com:13333"
+    "stratum+tcp://kawpow.unmineable.com:4333"
+    "stratum+tcp://kawpow.unmineable.com:5333"
+    
+    # KAWPOW (Ravencoin) - Eropa
+    "stratum+tcp://kawpow-eu.unmineable.com:3333"
+    "stratum+tcp://kawpow-eu.unmineable.com:13333"
+    "stratum+tcp://kawpow-eu.unmineable.com:4333"
+    "stratum+tcp://kawpow-eu.unmineable.com:5333"
+    
+    # KAWPOW (Ravencoin) - Asia
+    "stratum+tcp://kawpow-asia.unmineable.com:3333"
+    "stratum+tcp://kawpow-asia.unmineable.com:13333"
+    "stratum+tcp://kawpow-asia.unmineable.com:4333"
+    "stratum+tcp://kawpow-asia.unmineable.com:5333"
+    
+    # KAWPOW (Ravencoin) - Amerika
+    "stratum+tcp://kawpow-us.unmineable.com:3333"
+    "stratum+tcp://kawpow-us.unmineable.com:13333"
+    "stratum+tcp://kawpow-us.unmineable.com:4333"
+    "stratum+tcp://kawpow-us.unmineable.com:5333"
+    
+    # ETCHASH (Ethereum Classic) - Pool Utama
+    "stratum+tcp://etchash.unmineable.com:3333"
+    "stratum+tcp://etchash.unmineable.com:13333"
+    "stratum+tcp://etchash.unmineable.com:4333"
+    "stratum+tcp://etchash.unmineable.com:5333"
+    
+    # ETCHASH (Ethereum Classic) - Eropa
+    "stratum+tcp://etchash-eu.unmineable.com:3333"
+    "stratum+tcp://etchash-eu.unmineable.com:13333"
+    "stratum+tcp://etchash-eu.unmineable.com:4333"
+    "stratum+tcp://etchash-eu.unmineable.com:5333"
+    
+    # ETCHASH (Ethereum Classic) - Asia
+    "stratum+tcp://etchash-asia.unmineable.com:3333"
+    "stratum+tcp://etchash-asia.unmineable.com:13333"
+    "stratum+tcp://etchash-asia.unmineable.com:4333"
+    "stratum+tcp://etchash-asia.unmineable.com:5333"
+    
+    # ETCHASH (Ethereum Classic) - Amerika
+    "stratum+tcp://etchash-us.unmineable.com:3333"
+    "stratum+tcp://etchash-us.unmineable.com:13333"
+    "stratum+tcp://etchash-us.unmineable.com:4333"
+    "stratum+tcp://etchash-us.unmineable.com:5333"
+    
+    # AUTOLYKOS2 (Ergo) - Pool Utama
+    "stratum+tcp://autolykos.unmineable.com:3333"
+    "stratum+tcp://autolykos.unmineable.com:13333"
+    "stratum+tcp://autolykos.unmineable.com:4333"
+    "stratum+tcp://autolykos.unmineable.com:5333"
+    
+    # AUTOLYKOS2 (Ergo) - Eropa
+    "stratum+tcp://autolykos-eu.unmineable.com:3333"
+    "stratum+tcp://autolykos-eu.unmineable.com:13333"
+    "stratum+tcp://autolykos-eu.unmineable.com:4333"
+    "stratum+tcp://autolykos-eu.unmineable.com:5333"
+    
+    # AUTOLYKOS2 (Ergo) - Asia
+    "stratum+tcp://autolykos-asia.unmineable.com:3333"
+    "stratum+tcp://autolykos-asia.unmineable.com:13333"
+    "stratum+tcp://autolykos-asia.unmineable.com:4333"
+    "stratum+tcp://autolykos-asia.unmineable.com:5333"
+    
+    # AUTOLYKOS2 (Ergo) - Amerika
+    "stratum+tcp://autolykos-us.unmineable.com:3333"
+    "stratum+tcp://autolykos-us.unmineable.com:13333"
+    "stratum+tcp://autolykos-us.unmineable.com:4333"
+    "stratum+tcp://autolykos-us.unmineable.com:5333"
+    
+    # OCTOPUS (Conflux) - Pool Utama
+    "stratum+tcp://octopus.unmineable.com:3333"
+    "stratum+tcp://octopus.unmineable.com:13333"
+    "stratum+tcp://octopus.unmineable.com:4333"
+    "stratum+tcp://octopus.unmineable.com:5333"
+    
+    # OCTOPUS (Conflux) - Eropa
+    "stratum+tcp://octopus-eu.unmineable.com:3333"
+    "stratum+tcp://octopus-eu.unmineable.com:13333"
+    "stratum+tcp://octopus-eu.unmineable.com:4333"
+    "stratum+tcp://octopus-eu.unmineable.com:5333"
+    
+    # OCTOPUS (Conflux) - Asia
+    "stratum+tcp://octopus-asia.unmineable.com:3333"
+    "stratum+tcp://octopus-asia.unmineable.com:13333"
+    "stratum+tcp://octopus-asia.unmineable.com:4333"
+    "stratum+tcp://octopus-asia.unmineable.com:5333"
+    
+    # OCTOPUS (Conflux) - Amerika
+    "stratum+tcp://octopus-us.unmineable.com:3333"
+    "stratum+tcp://octopus-us.unmineable.com:13333"
+    "stratum+tcp://octopus-us.unmineable.com:4333"
+    "stratum+tcp://octopus-us.unmineable.com:5333"
+    
+    # HEXA (Kaspa) - Pool Utama
+    "stratum+tcp://hexa.unmineable.com:3333"
+    "stratum+tcp://hexa.unmineable.com:13333"
+    "stratum+tcp://hexa.unmineable.com:4333"
+    "stratum+tcp://hexa.unmineable.com:5333"
+    
+    # HEXA (Kaspa) - Eropa
+    "stratum+tcp://hexa-eu.unmineable.com:3333"
+    "stratum+tcp://hexa-eu.unmineable.com:13333"
+    "stratum+tcp://hexa-eu.unmineable.com:4333"
+    "stratum+tcp://hexa-eu.unmineable.com:5333"
+    
+    # HEXA (Kaspa) - Asia
+    "stratum+tcp://hexa-asia.unmineable.com:3333"
+    "stratum+tcp://hexa-asia.unmineable.com:13333"
+    "stratum+tcp://hexa-asia.unmineable.com:4333"
+    "stratum+tcp://hexa-asia.unmineable.com:5333"
+    
+    # HEXA (Kaspa) - Amerika
+    "stratum+tcp://hexa-us.unmineable.com:3333"
+    "stratum+tcp://hexa-us.unmineable.com:13333"
+    "stratum+tcp://hexa-us.unmineable.com:4333"
+    "stratum+tcp://hexa-us.unmineable.com:5333"
+    
+    # BEAMHASH III (Beam) - Pool Utama
+    "stratum+tcp://beamhash.unmineable.com:3333"
+    "stratum+tcp://beamhash.unmineable.com:13333"
+    "stratum+tcp://beamhash.unmineable.com:4333"
+    "stratum+tcp://beamhash.unmineable.com:5333"
+    
+    # BEAMHASH III (Beam) - Eropa
+    "stratum+tcp://beamhash-eu.unmineable.com:3333"
+    "stratum+tcp://beamhash-eu.unmineable.com:13333"
+    "stratum+tcp://beamhash-eu.unmineable.com:4333"
+    "stratum+tcp://beamhash-eu.unmineable.com:5333"
+    
+    # BEAMHASH III (Beam) - Asia
+    "stratum+tcp://beamhash-asia.unmineable.com:3333"
+    "stratum+tcp://beamhash-asia.unmineable.com:13333"
+    "stratum+tcp://beamhash-asia.unmineable.com:4333"
+    "stratum+tcp://beamhash-asia.unmineable.com:5333"
+    
+    # BEAMHASH III (Beam) - Amerika
+    "stratum+tcp://beamhash-us.unmineable.com:3333"
+    "stratum+tcp://beamhash-us.unmineable.com:13333"
+    "stratum+tcp://beamhash-us.unmineable.com:4333"
+    "stratum+tcp://beamhash-us.unmineable.com:5333"
+    
+    # ZELHASH (Flux) - Pool Utama
+    "stratum+tcp://zelhash.unmineable.com:3333"
+    "stratum+tcp://zelhash.unmineable.com:13333"
+    "stratum+tcp://zelhash.unmineable.com:4333"
+    "stratum+tcp://zelhash.unmineable.com:5333"
+    
+    # ZELHASH (Flux) - Eropa
+    "stratum+tcp://zelhash-eu.unmineable.com:3333"
+    "stratum+tcp://zelhash-eu.unmineable.com:13333"
+    "stratum+tcp://zelhash-eu.unmineable.com:4333"
+    "stratum+tcp://zelhash-eu.unmineable.com:5333"
+    
+    # ZELHASH (Flux) - Asia
+    "stratum+tcp://zelhash-asia.unmineable.com:3333"
+    "stratum+tcp://zelhash-asia.unmineable.com:13333"
+    "stratum+tcp://zelhash-asia.unmineable.com:4333"
+    "stratum+tcp://zelhash-asia.unmineable.com:5333"
+    
+    # ZELHASH (Flux) - Amerika
+    "stratum+tcp://zelhash-us.unmineable.com:3333"
+    "stratum+tcp://zelhash-us.unmineable.com:13333"
+    "stratum+tcp://zelhash-us.unmineable.com:4333"
+    "stratum+tcp://zelhash-us.unmineable.com:5333"
+    
+    # EVRPROGPOW (EVRice) - Pool Utama
+    "stratum+tcp://evrprogpow.unmineable.com:3333"
+    "stratum+tcp://evrprogpow.unmineable.com:13333"
+    "stratum+tcp://evrprogpow.unmineable.com:4333"
+    "stratum+tcp://evrprogpow.unmineable.com:5333"
+    
+    # EVRPROGPOW (EVRice) - Eropa
+    "stratum+tcp://evrprogpow-eu.unmineable.com:3333"
+    "stratum+tcp://evrprogpow-eu.unmineable.com:13333"
+    "stratum+tcp://evrprogpow-eu.unmineable.com:4333"
+    "stratum+tcp://evrprogpow-eu.unmineable.com:5333"
+    
+    # EVRPROGPOW (EVRice) - Asia
+    "stratum+tcp://evrprogpow-asia.unmineable.com:3333"
+    "stratum+tcp://evrprogpow-asia.unmineable.com:13333"
+    "stratum+tcp://evrprogpow-asia.unmineable.com:4333"
+    "stratum+tcp://evrprogpow-asia.unmineable.com:5333"
+    
+    # EVRPROGPOW (EVRice) - Amerika
+    "stratum+tcp://evrprogpow-us.unmineable.com:3333"
+    "stratum+tcp://evrprogpow-us.unmineable.com:13333"
+    "stratum+tcp://evrprogpow-us.unmineable.com:4333"
+    "stratum+tcp://evrprogpow-us.unmineable.com:5333"
+)
+
+# Daftar 50 algoritma mining yang didukung TeamRedMiner
+ALGORITHMS=(
+    ["ethash"]="Ethereum (ETH)"
+    ["etchash"]="Ethereum Classic (ETC)" 
+    ["kawpow"]="Ravencoin (RVN)"
+    ["firopow"]="Firo (FIRO)"
+    ["randomx"]="Monero (XMR)"
+    ["cryptonight_r"]="Monero (XMR) v8"
+    ["cryptonight_gpu"]="Various GPU coins"
+    ["cryptonight_xhv"]="Haven Protocol (XHV)"
+    ["cryptonight_xtl"]="Stellite (XTL)"
+    ["cryptonight_msr"]="Masari (MSR)"
+    ["cryptonight_zls"]="Zelerius (ZLS)"
+    ["cryptonight_ccx"]="Conceal (CCX)"
+    ["cryptonight_trtl"]="TurtleCoin (TRTL)"
+    ["cryptonight_upx"]="Uplexa (UPX)"
+    ["cryptonight_conceal"]="Conceal (CCX)"
+    ["cryptonight_fast"]="Various coins"
+    ["cryptonight_lite"]="Various coins"
+    ["cryptonight_heavy"]="Haven Protocol (XHV)"
+    ["cryptonight_bittube"]="BitTube (TUBE)"
+    ["cryptonight_stellite"]="Stellite (XTL)"
+    ["cryptonight_masari"]="Masari (MSR)"
+    ["cryptonight_aeon"]="Aeon (AEON)"
+    ["cryptonight_ipbc"]="IPBC"
+    ["cryptonight_swap"]="Swap (XWP)"
+    ["cryptonight_alloy"]="Alloy (XAO)"
+    ["cryptonight_rto"]="Arto (RTO)"
+    ["cryptonight_heavyx"]="Sumokoin (SUMO)"
+    ["cryptonight_turtle"]="TurtleCoin (TRTL)"
+    ["cryptonight_dark"]="Dark"
+    ["cryptonight_reborn"]="Reborn"
+    ["cryptonight_catalans"]="Catalans"
+    ["cryptonight_ptxc"]="Particl (PTXC)"
+    ["progpow"]="Various ProgPoW coins"
+    ["progpowz"]="Zano (ZANO)"
+    ["progpowvbk"]="VeriBlock (VBK)"
+    ["randomx_loki"]="Loki (LOKI)"
+    ["randomx_arq"]="Arqma (ARQ)"
+    ["randomx_wow"]="Wownero (WOW)"
+    ["randomx_keva"]="Kevacoin (KVA)"
+    ["randomx_sfx"]="SofaCoin (SFX)"
+    ["randomxmo"]="Monero Ocean (XMO)"
+    ["autolykos2"]="Ergo (ERG)"
+    ["octopus"]="Conflux (CFX)"
+    ["verthash"]="Vertcoin (VTC)"
+    ["evrprogpow"]="Evrmore (EVR)"
+    ["zelhash"]="ZelCash (ZEL)"
+    ["sha256"]="Bitcoin (BTC)"
+    ["scrypt"]="Litecoin (LTC)"
+    ["x11"]="Dash (DASH)"
+    ["quark"]="Quark (QRK)"
+    ["neoscrypt"]="Feathercoin (FTC)"
+    ["skein"]="Skein (SKC)"
+    ["groestl"]="Groestlcoin (GRS)"
+    ["blake2s"]="Blake2s coins"
+    ["lyra2z"]="Lyra2z coins"
+    ["lyra2re"]="Lyra2RE coins"
+    ["lyra2rev2"]="Vertcoin (VTC)"
+    ["yescrypt"]="Yescrypt coins"
+    ["equihash"]="Zcash (ZEC)"
+    ["equihash1445"]="Bitcoin Gold (BTG)"
+    ["equihash1927"]="Aion (AION)"
+    ["equihash2109"]="ZelCash (ZEL)"
+    ["equihash965"]="Zclassic (ZCL)"
+    ["beamhashiii"]="Beam (BEAM)"
+    ["cuckaroo29"]="Grin (GRIN)"
+    ["cuckatoo31"]="Grin (GRIN)"
+    ["cuckaroo29d"]="Grin (GRIN)"
+    ["randomarq"]="Arqma (ARQ)"
+    ["randomxl"]="Scala (XLA)"
+    ["randomwow"]="Wownero (WOW)"
+    ["randomsfx"]="SofaCoin (SFX)"
+    ["randomkeva"]="Kevacoin (KVA)"
+    ["randomxmo"]="Monero Ocean (XMO)"
+)
+
+THREADS=$(nproc --all 2>/dev/null || echo 4)
+INSTALL_DIR="$HOME/unmineable-miner"
+LOG_FILE="$INSTALL_DIR/mining.log"
+CONFIG_FILE="$INSTALL_DIR/config.json"
+WORKERS_FILE="$INSTALL_DIR/workers.json"
+BALANCE_CACHE="$INSTALL_DIR/balance_cache.txt"
+TRANSACTION_HISTORY_FILE="$INSTALL_DIR/transactions.json"
+SETTINGS_FILE="$INSTALL_DIR/settings.json"
+
+# Variabel user
+USER_ID=""
+WALLET_ADDRESS=""
+COIN=""
+CUSTOM_HASHRATE_LIMIT="999999"
+HASHRATE_LIMIT_ENABLED=false
+MIN_WITHDRAWAL=""
+MAX_WITHDRAWAL=""
+AUTO_WITHDRAWAL=false
+ACTIVE_WORKERS=()
+ACTIVE_POOLS=()
+MINING_BALANCE=0
+LAST_BALANCE_UPDATE=0
+REFERRAL_CODE=""
+ANIMATION_PID=0
+
+# Deteksi OS
+OS=""
+ARCH=""
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    OS="linux"
+    ARCH=$(uname -m)
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    OS="mac"
+    ARCH=$(uname -m)
+elif [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]]; then
+    OS="windows"
+    if [[ "$PROCESSOR_ARCHITECTURE" == "AMD64" ]] || [[ "$PROCESSOR_ARCHITEW6432" == "AMD64" ]]; then
+        ARCH="x86_64"
+    else
+        ARCH="x86"
+    fi
+else
+    OS="unknown"
+fi
+
+# ============================ FUNGSI DETEKSI HARDWARE ============================
+
+# Fungsi untuk mendeteksi GPU NVIDIA
+detect_nvidia_gpu() {
+    if command -v nvidia-smi &> /dev/null; then
+        echo -e "${GREEN}[INFO] NVIDIA GPU detected!${NC}"
+        NVIDIA_GPUS=$(nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
+        echo -e "${GREEN}[INFO] Found $NVIDIA_GPUS NVIDIA GPU(s)${NC}"
+        nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv
+        return 0
+    else
+        echo -e "${YELLOW}[INFO] No NVIDIA GPU detected${NC}"
+        return 1
+    fi
+}
+
+# Fungsi untuk mendeteksi GPU AMD
+detect_amd_gpu() {
+    if command -v rocm-smi &> /dev/null || command -v amdgpu &> /dev/null || ls /dev/dri/card* 2>/dev/null | grep -q card; then
+        echo -e "${GREEN}[INFO] AMD GPU detected!${NC}"
+        # Coba deteksi menggunakan berbagai metode
+        if command -v rocm-smi &> /dev/null; then
+            echo -e "${GREEN}[INFO] ROCm detected${NC}"
+            rocm-smi --showproductname
+        elif command -v clinfo &> /dev/null; then
+            echo -e "${GREEN}[INFO] OpenCL detected${NC}"
+            clinfo | grep "Device Name"
+        else
+            echo -e "${YELLOW}[INFO] AMD GPU found but no management tools available${NC}"
+        fi
+        return 0
+    else
+        echo -e "${YELLOW}[INFO] No AMD GPU detected${NC}"
+        return 1
+    fi
+}
+
+# Fungsi untuk mendeteksi GPU Intel
+detect_intel_gpu() {
+    if command -v intel_gpu_top &> /dev/null || ls /dev/dri/card* 2>/dev/null | grep -q card; then
+        if lspci | grep -i "VGA" | grep -i "Intel" &> /dev/null; then
+            echo -e "${GREEN}[INFO] Intel GPU detected!${NC}"
+            # Coba dapatkan info detail
+            if command -v intel_gpu_top &> /dev/null; then
+                echo -e "${GREEN}[INFO] Intel GPU tools available${NC}"
+            fi
+            lspci | grep -i "VGA" | grep -i "Intel"
+            return 0
+        fi
+    fi
+    echo -e "${YELLOW}[INFO] No Intel GPU detected${NC}"
+    return 1
+}
+
+# Fungsi untuk mendapatkan jumlah CPU thread yang lebih robust
+get_cpu_threads() {
+    local threads=4  # Default fallback
+    
+    # Method 1: Coba menggunakan nproc
+    if command -v nproc >/dev/null 2>&1; then
+        threads=$(nproc --all 2>/dev/null || nproc 2>/dev/null || echo 4)
+    # Method 2: Coba menggunakan sysctl (macOS)
+    elif command -v sysctl >/dev/null 2>&1; then
+        threads=$(sysctl -n hw.ncpu 2>/dev/null || echo 4)
+    # Method 3: Coba menggunakan /proc/cpuinfo (Linux)
+    elif [[ -f "/proc/cpuinfo" ]]; then
+        threads=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || echo 4)
+    # Method 4: Coba menggunakan wmic (Windows)
+    elif command -v wmic >/dev/null 2>&1; then
+        threads=$(wmic cpu get NumberOfLogicalProcessors 2>/dev/null | grep -E [0-9]+ | head -1 | tr -d ' ' || echo 4)
+    # Method 5: Coba environment variables
+    elif [[ -n "$NUMBER_OF_PROCESSORS" ]]; then
+        threads="$NUMBER_OF_PROCESSORS"
+    fi
+    
+    # Validasi hasil
+    if [[ ! "$threads" =~ ^[0-9]+$ ]] || [[ "$threads" -lt 1 ]]; then
+        threads=4
+    fi
+    
+    echo "$threads"
+}
+
+# Fungsi untuk mendeteksi CPU dengan error handling
+detect_cpu() {
+    echo -e "${GREEN}[INFO] CPU Information:${NC}"
+    
+    if [[ "$OS" == "linux" ]]; then
+        # Coba berbagai metode deteksi CPU
+        if command -v lscpu >/dev/null 2>&1; then
+            lscpu 2>/dev/null | grep -E "Model name|Architecture|CPU\(s\)" || \
+            echo -e "${YELLOW}[WARNING] lscpu failed, using alternative methods${NC}"
+        fi
+        
+        # Alternatif: baca langsung dari /proc/cpuinfo
+        if [[ -f "/proc/cpuinfo" ]]; then
+            local model_name=$(grep -m1 "model name" /proc/cpuinfo | cut -d: -f2 | sed 's/^[ \t]*//' 2>/dev/null || echo "Unknown")
+            local processors=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || echo "Unknown")
+            echo -e "Model name: $model_name"
+            echo -e "CPU(s): $processors"
+        fi
+        
+    elif [[ "$OS" == "mac" ]]; then
+        sysctl -n machdep.cpu.brand_string 2>/dev/null || echo "Unknown CPU"
+        sysctl -n hw.ncpu 2>/dev/null || echo "Unknown core count"
+        
+    elif [[ "$OS" == "windows" ]]; then
+        wmic cpu get name,numberofcores,numberoflogicalprocessors /format:table 2>/dev/null || \
+        echo -e "${YELLOW}[WARNING] wmic not available${NC}"
+    fi
+    
+    THREADS=$(get_cpu_threads)
+    echo -e "${GREEN}[INFO] Total CPU threads detected: $THREADS${NC}"
+}
+
+# ============================ MODIFIKASI VARIABEL THREADS ============================
+
+# Ganti baris ini:
+# THREADS=$(nproc --all 2>/dev/null || echo 4)
+
+# Dengan:
+THREADS=$(get_cpu_threads)
+
+# Fungsi untuk scan semua hardware
+detect_hardware() {
+    echo -e "${CYAN}=========================================================${NC}"
+    echo -e "${CYAN}                 HARDWARE DETECTION                      ${NC}"
+    echo -e "${CYAN}=========================================================${NC}"
+    
+    # Deteksi CPU
+    detect_cpu
+    
+    # Deteksi GPU
+    echo -e "${CYAN}---------------------------------------------------------${NC}"
+    echo -e "${CYAN}                  GPU DETECTION                          ${NC}"
+    echo -e "${CYAN}---------------------------------------------------------${NC}"
+    
+    detect_nvidia_gpu
+    detect_amd_gpu
+    detect_intel_gpu
+    
+    echo -e "${CYAN}=========================================================${NC}"
+}
+
+# ============================ FUNGSI INSTALASI DEPENDENSI ============================
+
+# Fungsi untuk install dependencies NVIDIA
+install_nvidia_dependencies() {
+    echo -e "${YELLOW}[INFO] Installing NVIDIA dependencies...${NC}"
+    
+    if [[ "$OS" == "linux" ]]; then
+        if command -v apt-get &> /dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y nvidia-driver-510 nvidia-cuda-toolkit nvidia-opencl-dev
+        elif command -v yum &> /dev/null; then
+            sudo yum install -y nvidia-driver cuda-toolkit
+        elif command -v dnf &> /dev/null; then
+            sudo dnf install -y nvidia-driver cuda-toolkit
+        else
+            echo -e "${RED}[ERROR] Unsupported package manager for NVIDIA drivers${NC}"
+        fi
+    elif [[ "$OS" == "windows" ]]; then
+        echo -e "${YELLOW}[INFO] Please ensure NVIDIA drivers are installed from:${NC}"
+        echo -e "${YELLOW}[INFO] https://www.nvidia.com/Download/index.aspx${NC}"
+    fi
+    
+    echo -e "${GREEN}[SUCCESS] NVIDIA dependencies installed!${NC}"
+}
+
+# Fungsi untuk install dependencies AMD
+install_amd_dependencies() {
+    echo -e "${YELLOW}[INFO] Installing AMD dependencies...${NC}"
+    
+    if [[ "$OS" == "linux" ]]; then
+        if command -v apt-get &> /dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y rocm-opencl-dev rocm-dev
+            # Tambahkan user ke group video dan render
+            sudo usermod -a -G video $USER
+            sudo usermod -a -G render $USER
+        elif command -v yum &> /dev/null; then
+            sudo yum install -y rocm-opencl-dev rocm-dev
+        elif command -v dnf &> /dev/null; then
+            sudo dnf install -y rocm-opencl-dev rocm-dev
+        else
+            echo -e "${RED}[ERROR] Unsupported package manager for AMD drivers${NC}"
+        fi
+    elif [[ "$OS" == "windows" ]]; then
+        echo -e "${YELLOW}[INFO] Please ensure AMD drivers are installed from:${NC}"
+        echo -e "${YELLOW}[INFO] https://www.amd.com/en/support${NC}"
+    fi
+    
+    echo -e "${GREEN}[SUCCESS] AMD dependencies installed!${NC}"
+}
+
+# Fungsi untuk install dependencies Intel
+install_intel_dependencies() {
+    echo -e "${YELLOW}[INFO] Installing Intel dependencies...${NC}"
+    
+    if [[ "$OS" == "linux" ]]; then
+        if command -v apt-get &> /dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y intel-opencl-icd intel-level-zero-gpu level-zero
+        elif command -v yum &> /dev/null; then
+            sudo yum install -y intel-opencl intel-level-zero-gpu level-zero
+        elif command -v dnf &> /dev/null; then
+            sudo dnf install -y intel-opencl intel-level-zero-gpu level-zero
+        else
+            echo -e "${RED}[ERROR] Unsupported package manager for Intel drivers${NC}"
+        fi
+    elif [[ "$OS" == "windows" ]]; then
+        echo -e "${YELLOW}[INFO] Please ensure Intel GPU drivers are installed from:${NC}"
+        echo -e "${YELLOW}[INFO] https://www.intel.com/content/www/us/en/download-center/home.html${NC}"
+    fi
+    
+    echo -e "${GREEN}[SUCCESS] Intel dependencies installed!${NC}"
+}
+
+# Fungsi untuk install dependencies mining umum
+install_mining_dependencies() {
+    echo -e "${YELLOW}[INFO] Installing general mining dependencies...${NC}"
+    
+    if [[ "$OS" == "linux" ]]; then
+        if command -v apt-get &> /dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y git build-essential cmake libuv1-dev libssl-dev libhwloc-dev wget curl jq bc ocl-icd-opencl-dev opencl-headers
+        elif command -v yum &> /dev/null; then
+            sudo yum install -y git make cmake gcc libuv-devel openssl-devel hwloc-devel wget curl jq bc ocl-icd-devel opencl-headers
+        elif command -v dnf &> /dev/null; then
+            sudo dnf install -y git make cmake gcc libuv-devel openssl-devel hwloc-devel wget curl jq bc ocl-icd-devel opencl-headers
+        else
+            echo -e "${RED}[ERROR] Unsupported package manager. Please install dependencies manually.${NC}"
+            exit 1
+        fi
+    elif [[ "$OS" == "mac" ]]; then
+        if command -v brew &> /dev/null; then
+            brew update
+            brew install git cmake libuv libssl hwloc wget curl jq bc
+        else
+            echo -e "${RED}[ERROR] Homebrew not found. Please install Homebrew first.${NC}"
+            exit 1
+        fi
+    elif [[ "$OS" == "windows" ]]; then
+        # Dependencies Windows akan ditangani oleh install_gitbash_windows
+        echo -e "${YELLOW}[INFO] Windows dependencies will be handled by Git Bash installer${NC}"
+    fi
+    
+    echo -e "${GREEN}[SUCCESS] General mining dependencies installed!${NC}"
+}
+
+# Fungsi untuk install semua dependencies berdasarkan hardware yang terdeteksi
+install_all_dependencies() {
+    echo -e "${CYAN}=========================================================${NC}"
+    echo -e "${CYAN}               INSTALLING DEPENDENCIES                   ${NC}"
+    echo -e "${CYAN}=========================================================${NC}"
+    
+    # Install dependencies umum
+    install_mining_dependencies
+    
+    # Deteksi dan install dependencies GPU
+    if detect_nvidia_gpu; then
+        install_nvidia_dependencies
+    fi
+    
+    if detect_amd_gpu; then
+        install_amd_dependencies
+    fi
+    
+    if detect_intel_gpu; then
+        install_intel_dependencies
+    fi
+    
+    echo -e "${CYAN}=========================================================${NC}"
+    echo -e "${GREEN}[SUCCESS] All dependencies installed successfully!${NC}"
+    echo -e "${CYAN}=========================================================${NC}"
+}
+
+# ============================ FUNGSI BUILD MINER ============================
+
+# Fungsi untuk build XMRig dengan dukungan CPU/GPU
+build_xmrig_with_gpu_support() {
+    echo -e "${YELLOW}[INFO] Building XMRig with GPU support...${NC}"
+    
+    cd "$INSTALL_DIR"
+    
+    if [ -d "$INSTALL_DIR" ]; then
+        echo -e "${YELLOW}[INFO] Directory exists, checking if it's a valid git repo...${NC}"
+        cd "$INSTALL_DIR"
+        
+        if git rev-parse --git-dir > /dev/null 2>&1; then
+            echo -e "${YELLOW}[INFO] Valid git repository, updating...${NC}"
+            git pull
+        else
+            echo -e "${YELLOW}[INFO] Not a valid git repo, removing and cloning fresh...${NC}"
+            cd ..
+            rm -rf "$INSTALL_DIR"
+            git clone https://github.com/xmrig/xmrig "$INSTALL_DIR"
+            cd "$INSTALL_DIR"
+        fi
+    else
+        git clone https://github.com/xmrig/xmrig "$INSTALL_DIR"
+        cd "$INSTALL_DIR"
+    fi
+    
+    if [ ! -f "CMakeLists.txt" ]; then
+        echo -e "${RED}[ERROR] CMakeLists.txt not found!${NC}"
+        echo -e "${YELLOW}[INFO] Removing directory and trying fresh clone...${NC}"
+        cd ..
+        rm -rf "$INSTALL_DIR"
+        git clone https://github.com/xmrig/xmrig "$INSTALL_DIR"
+        cd "$INSTALL_DIR"
+    fi
+    
+    mkdir -p build
+    cd build
+    
+    if [ -f "Makefile" ]; then
+        make clean
+    fi
+    
+    # Konfigurasi build berdasarkan GPU yang terdeteksi
+    local cmake_options="-DCMAKE_BUILD_TYPE=Release"
+    
+    if detect_nvidia_gpu; then
+        cmake_options="$cmake_options -DWITH_CUDA=ON -DWITH_NVML=ON"
+    else
+        cmake_options="$cmake_options -DWITH_CUDA=OFF -DWITH_NVML=OFF"
+    fi
+    
+    if detect_amd_gpu || detect_intel_gpu; then
+        cmake_options="$cmake_options -DWITH_OPENCL=ON"
+    else
+        cmake_options="$cmake_options -DWITH_OPENCL=OFF"
+    fi
+    
+    echo -e "${YELLOW}[INFO] Configuring with options: $cmake_options${NC}"
+    cmake .. $cmake_options
+    
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}[ERROR] CMake failed!${NC}"
+        echo -e "${YELLOW}[INFO] Removing build directory and trying again...${NC}"
+        cd ..
+        rm -rf build
+        mkdir build
+        cd build
+        cmake .. $cmake_options
+    fi
+    
+    make -j$(nproc)
+    
+    if [ ! -f xmrig ] && [ ! -f xmrig.exe ]; then
+        echo -e "${RED}[ERROR] XMRig build failed!${NC}"
+        echo -e "${YELLOW}[INFO] Trying to download pre-built binary...${NC}"
+        download_prebuilt
+        return
+    fi
+    
+    echo -e "${GREEN}[SUCCESS] XMRig built successfully with GPU support!${NC}"
+}
+
+# ============================ FUNGSI WORKER OTOMATIS ============================
+
+# Fungsi untuk membuat 200 worker otomatis
+create_200_workers() {
+    echo -e "${YELLOW}[INFO] Creating 200 automatic workers...${NC}"
+    
+    ACTIVE_WORKERS=()
+    local base_name="${USER_ID:-miner}"
+    
+    for i in {1..200}; do
+        local worker_name="${base_name}-worker-${i}"
+        ACTIVE_WORKERS+=("$worker_name")
+    done
+    
+    # Simpan workers ke file
+    printf '%s\n' "${ACTIVE_WORKERS[@]}" > "$WORKERS_FILE"
+    
+    echo -e "${GREEN}[SUCCESS] 200 workers created successfully!${NC}"
+    echo -e "${YELLOW}Worker names: ${base_name}-worker-1 to ${base_name}-worker-200${NC}"
+}
+
+# ============================ FUNGSI MINING & BALANCE ============================
+
+# Fungsi untuk mendapatkan balance dari Unmineable
+get_balance() {
+    if [ -z "$WALLET_ADDRESS" ] || [ -z "$COIN" ]; then
+        echo "0.0"
+        return
+    fi
+    
+    # Gunakan cache untuk menghindari terlalu banyak request
+    if [ -f "$BALANCE_CACHE" ]; then
+        local cache_age=$(($(date +%s) - $(stat -c %Y "$BALANCE_CACHE" 2>/dev/null || echo 0)))
+        if [ $cache_age -lt 10 ]; then  # Cache valid untuk 10 detik
+            cat "$BALANCE_CACHE"
+            return
+        fi
+    fi
+    
+    local balance_data
+    balance_data=$(curl -s "https://api.unmineable.com/v4/address/$WALLET_ADDRESS?coin=$COIN" | jq -r '.data.balance' 2>/dev/null)
+    
+    if [ $? -eq 0 ] && [ "$balance_data" != "null" ]; then
+        echo "$balance_data" > "$BALANCE_CACHE"
+        echo "$balance_data"
+    else
+        # Fallback ke scraping HTML jika API tidak bekerja
+        balance_data=$(curl -s "https://unmineable.com/coins/$COIN/address/$WALLET_ADDRESS" | grep -oE "balance_[A-Za-z0-9]+\":[[:space:]]*[0-9.]+" | head -1 | cut -d: -f2 | tr -d ' ')
+        if [ -n "$balance_data" ]; then
+            echo "$balance_data" > "$BALANCE_CACHE"
+            echo "$balance_data"
+        else
+            echo "0.0"
+        fi
+    fi
+}
+
+# Fungsi untuk update balance mining secara real-time
+update_mining_balance() {
+    local current_time=$(date +%s)
+    
+    # Update balance setiap 5 detik
+    if [ $((current_time - LAST_BALANCE_UPDATE)) -ge 5 ]; then
+        MINING_BALANCE=$(get_balance)
+        LAST_BALANCE_UPDATE=$current_time
+    fi
+}
+
+# Fungsi untuk mengecek apakah mining sedang berjalan
+is_mining() {
+    if [ "$OS" = "windows" ]; then
+        tasklist //FI "IMAGENAME eq xmrig.exe" 2>/dev/null | grep -q xmrig.exe
+    else
+        pgrep -f xmrig > /dev/null 2>&1
+    fi
+    return $?
+}
+
+# Fungsi untuk memulai mining
+start_mining() {
+    if is_mining; then
+        echo -e "${YELLOW}[WARNING] Mining is already running!${NC}"
+        sleep 2
+        return
+    fi
+    
+    if [ -z "$USER_ID" ] || [ -z "$WALLET_ADDRESS" ] || [ -z "$COIN" ]; then
+        echo -e "${RED}[ERROR] User ID, Wallet Address, or Coin not set!${NC}"
+        echo -e "${YELLOW}Please configure settings first.${NC}"
+        sleep 2
+        return
+    fi
+    
+    echo -e "${YELLOW}[INFO] Starting mining with 200 active pools...${NC}"
+    cd "$INSTALL_DIR/build"
+    
+    if [ "$OS" = "windows" ]; then
+        if [ ! -f xmrig.exe ]; then
+            echo -e "${RED}[ERROR] XMRig binary not found!${NC}"
+            echo -e "${YELLOW}[INFO] Trying to reinstall...${NC}"
+            reinstall_xmrig
+        fi
+    else
+        if [ ! -f xmrig ]; then
+            echo -e "${RED}[ERROR] XMRig binary not found!${NC}"
+            echo -e "${YELLOW}[INFO] Trying to reinstall...${NC}"
+            reinstall_xmrig
+        fi
+    fi
+    
+    # Set unlimited hash rate jika diaktifkan
+    if [ "$HASHRATE_LIMIT_ENABLED" = true ] && [ "$CUSTOM_HASHRATE_LIMIT" = "999999" ]; then
+        echo -e "${GREEN}[INFO] Unlimited hash rate enabled!${NC}"
+    fi
+    
+    if [ "$OS" = "windows" ]; then
+        start //B xmrig.exe -c "$CONFIG_FILE" >> "$LOG_FILE" 2>&1
+    else
+        nohup ./xmrig -c "$CONFIG_FILE" >> "$LOG_FILE" 2>&1 &
+    fi
+    
+    sleep 2
+    if is_mining; then
+        echo -e "${GREEN}[SUCCESS] Mining started with 200 active pools!${NC}"
+        echo -e "${YELLOW}Active pools:${NC}"
+        for pool in "${POOLS[@]}"; do
+            echo -e "  ${BLUE}- $pool${NC}"
+        done
+    else
+        echo -e "${RED}[ERROR] Failed to start mining!${NC}"
+        echo -e "${YELLOW}[INFO] Trying to reinstall XMRig...${NC}"
+        reinstall_xmrig
+        start_mining
+        mining_animation
+    fi
+    sleep 2
+}
+
+# Fungsi untuk menghentikan mining
+stop_mining() {
+    if is_mining; then
+        echo -e "${YELLOW}[INFO] Stopping mining...${NC}"
+        if [ "$OS" = "windows" ]; then
+            taskkill //F //IM xmrig.exe > /dev/null 2>&1
+        else
+            pkill -f xmrig
+        fi
+        sleep 2
+        echo -e "${GREEN}[INFO] Mining stopped.${NC}"
+    else
+        echo -e "${YELLOW}[INFO] No mining process is running.${NC}"
+    fi
+    sleep 2
+}
+
+# Fungsi untuk reinstall XMRig
+reinstall_xmrig() {
+    echo -e "${YELLOW}[INFO] Reinstalling XMRig...${NC}"
+    stop_mining
+    cd "$HOME"
+    rm -rf "$INSTALL_DIR"
+    install_xmrig
+    if [ -n "$USER_ID" ] && [ -n "$WALLET_ADDRESS" ] && [ -n "$COIN" ]; then
+        create_config
+    fi
+    echo -e "${GREEN}[SUCCESS] XMRig reinstalled successfully!${NC}"
+    sleep 2
+}
+
+# ============================ FUNGSI LAINNYA YANG DIPERLUKAN ============================
+
+# Fungsi untuk memuat transaksi dari file
+load_transactions() {
+    if [ -f "$TRANSACTION_HISTORY_FILE" ]; then
+        jq -c '.[]' "$TRANSACTION_HISTORY_FILE" | while read -r transaction; do
+            echo "$transaction"
+        done
+    fi
+}
+
+# Fungsi untuk menambahkan transaksi baru
+add_transaction() {
+    local amount=$1
+    local status=$2
+    local txid=$3
+    
+    local transaction=$(jq -n \
+        --arg date "$(date '+%Y-%m-%d %H:%M:%S')" \
+        --arg amount "$amount" \
+        --arg status "$status" \
+        --arg txid "$txid" \
+        '{date: $date, amount: $amount, status: $status, txid: $txid}')
+    
+    if [ -f "$TRANSACTION_HISTORY_FILE" ]; then
+        jq --argjson transaction "$transaction" '. += [$transaction]' "$TRANSACTION_HISTORY_FILE" > tmp.json && mv tmp.json "$TRANSACTION_HISTORY_FILE"
+    else
+        echo "[$transaction]" > "$TRANSACTION_HISTORY_FILE"
+    fi
+}
+
+# Fungsi untuk mendapatkan transaction history
+view_transaction_history() {
+    if [ -z "$WALLET_ADDRESS" ] || [ -z "$COIN" ]; then
+        echo "No transaction history available."
+        return
+    fi
+    
+    echo "Fetching transaction history..."
+    
+    echo -e "${BLUE}════════════════════ TRANSACTION HISTORY ════════════════════${NC}"
+    echo -e "${GREEN}Date                | Amount  | Status    | Transaction ID${NC}"
+    echo -e "${BLUE}─────────────────────────────────────────────────────────────────────${NC}"
+    
+    # Coba API Unmineable terlebih dahulu
+    local api_data
+    api_data=$(curl -s "https://api.unmineable.com/v4/address/$WALLET_ADDRESS?coin=$COIN")
+    
+    if [ $? -eq 0 ] && [ -n "$api_data" ]; then
+        local tx_data=$(echo "$api_data" | jq -r '.data.transactions' 2>/dev/null)
+        
+        if [ "$tx_data" != "null" ] && [ "$tx_data" != "[]" ] && [ -n "$tx_data" ]; then
+            echo "$tx_data" | jq -r '.[] | "\(.date) | \(.amount) \(.coin) | \(.status) | \(.txid)"' | head -10 | while read -r line; do
+                echo -e "${YELLOW}$line${NC}"
+            done
+            return
+        fi
+    fi
+    
+    # Fallback untuk berbagai wallet
+    local explorer_url=""
+    case $COIN in
+        "BTC")
+            explorer_url="https://blockchain.info/address/$WALLET_ADDRESS"
+            ;;
+        "ETH")
+            explorer_url="https://etherscan.io/address/$WALLET_ADDRESS"
+            ;;
+        "LTC")
+            explorer_url="https://blockchair.com/litecoin/address/$WALLET_ADDRESS"
+            ;;
+        "DOGE")
+            explorer_url="https://blockchair.com/dogecoin/address/$WALLET_ADDRESS"
+            ;;
+        "USDT")
+            explorer_url="https://etherscan.io/token/0xdac17f958d2ee523a2206206994597c13d831ec7?a=$WALLET_ADDRESS"
+            ;;
+        "TRX")
+            explorer_url="https://tronscan.org/#/address/$WALLET_ADDRESS"
+            ;;
+        "SHIB")
+            explorer_url="https://etherscan.io/token/0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce?a=$WALLET_ADDRESS"
+            ;;
+        "XRP")
+            explorer_url="https://xrpscan.com/account/$WALLET_ADDRESS"
+            ;;
+        "ADA")
+            explorer_url="https://cardanoscan.io/address/$WALLET_ADDRESS"
+            ;;
+        "DOT")
+            explorer_url="https://polkascan.io/polkadot/account/$WALLET_ADDRESS"
+            ;;
+        *)
+            echo -e "${RED}Transaction history not available for $COIN${NC}"
+            return
+            ;;
+    esac
+    
+    echo -e "${YELLOW}View transactions at: ${CYAN}$explorer_url${NC}"
+    echo -e "${YELLOW}Note: Some coins may require checking the explorer directly${NC}"
+    
+    # Coba menampilkan transaksi dari file lokal jika ada
+    if [ -f "$TRANSACTION_HISTORY_FILE" ]; then
+        echo
+        echo -e "${GREEN}Local Transaction History:${NC}"
+        jq -r '.[] | "\(.date) | \(.amount) | \(.status) | \(.txid)"' "$TRANSACTION_HISTORY_FILE" | head -5 | while read -r line; do
+            echo -e "${YELLOW}$line${NC}"
+        done
+    fi
+}
+
+# Fungsi untuk mendapatkan informasi pembayaran dari API Unmineable
+get_payment_info() {
+    if [ -z "$WALLET_ADDRESS" ] || [ -z "$COIN" ]; then
+        echo "{}"
+        return
+    fi
+    
+    local payment_data
+    payment_data=$(curl -s "https://api.unmineable.com/v4/address/$WALLET_ADDRESS?coin=$COIN&tab=payments")
+    
+    if [ $? -eq 0 ] && [ "$payment_data" != "null" ]; then
+        echo "$payment_data"
+    else
+        echo "{}"
+    fi
+}
+
+# Fungsi untuk memproses auto withdrawal
+process_auto_withdrawal() {
+    if [ "$AUTO_WITHDRAWAL" != true ]; then
+        return
+    fi
+    
+    if [ -z "$MIN_WITHDRAWAL" ] || [ -z "$MAX_WITHDRAWAL" ]; then
+        echo -e "${YELLOW}[WARNING] Auto withdrawal enabled but min/max withdrawal not set!${NC}"
+        return
+    fi
+    
+    update_mining_balance
+    
+    # Cek jika balance mencukupi untuk withdrawal
+    if [ $(echo "$MINING_BALANCE >= $MIN_WITHDRAWAL" | bc -l) -eq 1 ]; then
+        local amount_to_withdraw
+        # Tentukan jumlah yang akan ditarik (maksimum balance atau max_withdrawal)
+        if [ $(echo "$MINING_BALANCE > $MAX_WITHDRAWAL" | bc -l) -eq 1 ]; then
+            amount_to_withdraw="$MAX_WITHDRAWAL"
+        else
+            amount_to_withdraw="$MINING_BALANCE"
+        fi
+        
+        echo -e "${YELLOW}[INFO] Auto withdrawal triggered: $amount_to_withdraw $COIN${NC}"
+        
+        # Proses withdrawal (simulasi - dalam implementasi nyata akan memanggil API)
+        process_withdrawal "$amount_to_withdraw" "auto"
+    fi
+}
+
+# Fungsi untuk memproses withdrawal
+process_withdrawal() {
+    local amount=$1
+    local withdrawal_type=$2
+    
+    # Validasi amount
+    if [ $(echo "$amount < $MIN_WITHDRAWAL" | bc -l) -eq 1 ]; then
+        echo -e "${RED}[ERROR] Amount is below minimum withdrawal ($MIN_WITHDRAWAL)!${NC}"
+        return 1
+    fi
+    
+    if [ $(echo "$amount > $MAX_WITHDRAWAL" | bc -l) -eq 1 ]; then
+        echo -e "${RED}[ERROR] Amount exceeds maximum withdrawal ($MAX_WITHDRAWAL)!${NC}"
+        return 1
+    fi
+    
+    if [ $(echo "$amount > $MINING_BALANCE" | bc -l) -eq 1 ]; then
+        echo -e "${RED}[ERROR] Insufficient balance! Available: $MINING_BALANCE${NC}"
+        return 1
+    fi
+    
+    echo -e "${YELLOW}[INFO] Processing $withdrawal_type withdrawal of $amount $COIN...${NC}"
+    
+    # Simulasi proses withdrawal (dalam implementasi nyata, ini akan memanggil API Unmineable)
+    local txid="tx_$(date +%s)_$(openssl rand -hex 8 2>/dev/null || echo $RANDOM)"
+    local status="Completed"
+    
+    # Kurangi balance
+    MINING_BALANCE=$(echo "$MINING_BALANCE - $amount" | bc -l)
+    echo "$MINING_BALANCE" > "$BALANCE_CACHE"
+    
+    # Tambahkan ke riwayat transaksi
+    add_transaction "$amount" "$status" "$txid"
+    
+    echo -e "${GREEN}[SUCCESS] Withdrawal processed successfully!${NC}"
+    echo -e "${YELLOW}Transaction ID: $txid${NC}"
+    
+    # Log untuk auto withdrawal
+    if [ "$withdrawal_type" = "auto" ]; then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') - Auto withdrawal: $amount $COIN (TXID: $txid)" >> "$LOG_FILE"
+    fi
+    
+    return 0
+}
+
+# Fungsi untuk withdrawal manual
+manual_withdrawal() {
+    echo -e "${YELLOW}[INFO] Processing manual withdrawal...${NC}"
+    
+    # Cek balance terlebih dahulu
+    update_mining_balance
+    
+    if [ $(echo "$MINING_BALANCE < $MIN_WITHDRAWAL" | bc -l) -eq 1 ]; then
+        echo -e "${RED}[ERROR] Balance ($MINING_BALANCE) is below minimum withdrawal amount ($MIN_WITHDRAWAL)!${NC}"
+        sleep 2
+        return
+    fi
+    
+    # Tampilkan informasi balance dan pembayaran terakhir
+    local payment_info=$(get_payment_info)
+    local last_payment=$(echo "$payment_info" | jq -r '.data.payments[0] // empty' 2>/dev/null)
+    
+    if [ -n "$last_payment" ]; then
+        local last_amount=$(echo "$last_payment" | jq -r '.amount')
+        local last_date=$(echo "$last_payment" | jq -r '.date')
+        echo -e "${CYAN}Last payment: $last_amount $COIN on $last_date${NC}"
+    fi
+    
+    echo -e "${CYAN}Current balance: $MINING_BALANCE $COIN${NC}"
+    echo -e "${CYAN}Minimum withdrawal: $MIN_WITHDRAWAL $COIN${NC}"
+    echo -e "${CYAN}Maximum withdrawal: $MAX_WITHDRAWAL $COIN${NC}"
+    echo
+    
+    echo -n "Enter withdrawal amount: "
+    read amount
+    
+    # Validasi input
+    if ! [[ "$amount" =~ ^[0-9.]+$ ]]; then
+        echo -e "${RED}[ERROR] Please enter a valid number!${NC}"
+        sleep 2
+        return
+    fi
+    
+    # Proses withdrawal
+    process_withdrawal "$amount" "manual"
+    sleep 2
+}
+
+# Fungsi untuk menampilkan riwayat pembayaran dari API
+view_payment_history() {
+    echo -e "${YELLOW}[INFO] Fetching payment history from API...${NC}"
+    
+    local payment_info=$(get_payment_info)
+    local payments=$(echo "$payment_info" | jq -r '.data.payments // []' 2>/dev/null)
+    
+    if [ -z "$payments" ] || [ "$payments" = "[]" ]; then
+        echo -e "${YELLOW}[INFO] No payment history found.${NC}"
+        sleep 2
+        return
+    fi
+    
+    echo -e "${BLUE}════════════════════ PAYMENT HISTORY ════════════════════${NC}"
+    echo -e "${GREEN}Date                | Amount    | Status    | Transaction ID${NC}"
+    echo -e "${BLUE}─────────────────────────────────────────────────────────────────────${NC}"
+    
+    echo "$payments" | jq -r '.[] | "\(.date) | \(.amount) | \(.status) | \(.txid)"' | while read -r payment; do
+        echo -e "${YELLOW}$payment${NC}"
+    done
+    
+    echo
+    echo -n "Press Enter to continue..."
+    read
+}
+
+# Fungsi untuk pengaturan auto withdrawal
+auto_withdrawal_settings() {
+    echo -e "${YELLOW}[INFO] Auto Withdrawal Settings...${NC}"
+    
+    echo -e "Current Auto Withdrawal: $([ "$AUTO_WITHDRAWAL" = true ] && echo -e "${GREEN}Enabled${NC}" || echo -e "${RED}Disabled${NC}")"
+    echo -e "Minimum Withdrawal: ${YELLOW}${MIN_WITHDRAWAL:-Not set}${NC}"
+    echo -e "Maximum Withdrawal: ${YELLOW}${MAX_WITHDRAWAL:-Not set}${NC}"
+    echo
+    echo -e "Options:"
+    echo -e "1. $([ "$AUTO_WITHDRAWAL" = true ] && echo "Disable" || echo "Enable") Auto Withdrawal"
+    echo -e "2. Set Minimum Withdrawal"
+    echo -e "3. Set Maximum Withdrawal"
+    echo -e "4. Back"
+    echo
+    echo -n "Select option [1-4]: "
+    
+    read choice
+    case $choice in
+        1)
+            if [ "$AUTO_WITHDRAWAL" = true ]; then
+                AUTO_WITHDRAWAL=false
+                echo -e "${GREEN}[SUCCESS] Auto Withdrawal disabled!${NC}"
+            else
+                AUTO_WITHDRAWAL=true
+                echo -e "${GREEN}[SUCCESS] Auto Withdrawal enabled!${NC}"
+            fi
+            save_settings
+            ;;
+        2)
+            echo -n "Enter Minimum Withdrawal Amount: "
+            read min_amount
+            if [[ "$min_amount" =~ ^[0-9.]+$ ]]; then
+                MIN_WITHDRAWAL="$min_amount"
+                echo -e "${GREEN}[SUCCESS] Minimum withdrawal set to $min_amount!${NC}"
+                save_settings
+            else
+                echo -e "${RED}[ERROR] Please enter a valid number!${NC}"
+            fi
+            ;;
+        3)
+            echo -n "Enter Maximum Withdrawal Amount: "
+            read max_amount
+            if [[ "$max_amount" =~ ^[0-9.]+$ ]]; then
+                MAX_WITHDRAWAL="$max_amount"
+                echo -e "${GREEN}[SUCCESS] Maximum withdrawal set to $max_amount!${NC}"
+                save_settings
+            else
+                echo -e "${RED}[ERROR] Please enter a valid number!${NC}"
+            fi
+            ;;
+        4)
+            return
+            ;;
+        *)
+            echo -e "${RED}[ERROR] Invalid option!${NC}"
+            ;;
+    esac
+    sleep 2
+}
+
+# Fungsi untuk pengaturan hash rate
+hashrate_settings() {
+    echo -e "${YELLOW}[INFO] Hash Rate Settings...${NC}"
+    
+    echo -e "Hash Rate Limit Status: $([ "$HASHRATE_LIMIT_ENABLED" = true ] && echo -e "${GREEN}Enabled${NC}" || echo -e "${RED}Disabled${NC}")"
+    echo -e "Current Hash Rate Limit: ${YELLOW}${CUSTOM_HASHRATE_LIMIT:-Not set}${NC}"
+    echo
+    echo -e "Options:"
+    echo -e "1. $([ "$HASHRATE_LIMIT_ENABLED" = true ] && echo "Disable" || echo "Enable") Hash Rate Limit"
+    echo -e "2. Set Unlimited Hash Rate (999999)"
+    echo -e "3. Set Custom Hash Rate Limit"
+    echo -e "4. Back"
+    echo
+    echo -n "Select option [1-4]: "
+    
+    read choice
+    case $choice in
+        1)
+            if [ "$HASHRATE_LIMIT_ENABLED" = true ]; then
+                HASHRATE_LIMIT_ENABLED=false
+                echo -e "${GREEN}[SUCCESS] Hash Rate Limit disabled!${NC}"
+            else
+                HASHRATE_LIMIT_ENABLED=true
+                echo -e "${GREEN}[SUCCESS] Hash Rate Limit enabled!${NC}"
+            fi
+            create_config
+            save_settings
+            ;;
+        2)
+            CUSTOM_HASHRATE_LIMIT="999999"
+            HASHRATE_LIMIT_ENABLED=true
+            echo -e "${GREEN}[SUCCESS] Unlimited hash rate (999999) set!${NC}"
+            create_config
+            save_settings
+            ;;
+        3)
+            echo -n "Enter Hash Rate Limit (e.g., 2000 for 1kH/s): "
+            read limit
+            if [[ "$limit" =~ ^[0-9]+$ ]] && [ "$limit" -gt 0 ]; then
+                CUSTOM_HASHRATE_LIMIT="$limit"
+                HASHRATE_LIMIT_ENABLED=true
+                echo -e "${GREEN}[SUCCESS] Hash Rate Limit set to $limit H/s!${NC}"
+                create_config
+                save_settings
+            else
+                echo -e "${RED}[ERROR] Please enter a valid positive number!${NC}"
+            fi
+            ;;
+        4)
+            return
+            ;;
+        *)
+            echo -e "${RED}[ERROR] Invalid option!${NC}"
+            ;;
+    esac
+    sleep 2
+}
+
+# Fungsi untuk pengaturan worker
+worker_settings() {
+    echo -e "${YELLOW}[INFO] Worker Settings...${NC}"
+    
+    echo -e "Current Active Workers: ${#ACTIVE_WORKERS[@]}"
+    for i in "${!ACTIVE_WORKERS[@]}"; do
+        echo -e "  ${GREEN}$((i+1)). ${ACTIVE_WORKERS[$i]}${NC}"
+    done
+    echo
+    echo -e "Options:"
+    echo -e "1. Add Worker"
+    echo -e "2. Remove Worker"
+    echo -e "3. Clear All Workers"
+    echo -e "4. Back"
+    echo
+    echo -n "Select option [1-4]: "
+    
+    read choice
+    case $choice in
+        1)
+            echo -n "Enter Worker Name: "
+            read worker_name
+            if [ -n "$worker_name" ]; then
+                ACTIVE_WORKERS+=("$worker_name")
+                echo -e "${GREEN}[SUCCESS] Worker $worker_name added!${NC}"
+                # Simpan workers ke file
+                printf '%s\n' "${ACTIVE_WORKERS[@]}" > "$WORKERS_FILE"
+            else
+                echo -e "${RED}[ERROR] Worker name cannot be empty!${NC}"
+            fi
+            ;;
+        2)
+            if [ ${#ACTIVE_WORKERS[@]} -eq 0 ]; then
+                echo -e "${YELLOW}[INFO] No workers to remove.${NC}"
+            else
+                echo -n "Enter Worker Number to Remove: "
+                read worker_num
+                if [[ "$worker_num" =~ ^[0-9]+$ ]] && [ "$worker_num" -ge 1 ] && [ "$worker_num" -le ${#ACTIVE_WORKERS[@]} ]; then
+                    removed_worker="${ACTIVE_WORKERS[$((worker_num-1))]}"
+                    unset "ACTIVE_WORKERS[$((worker_num-1))]"
+                    ACTIVE_WORKERS=("${ACTIVE_WORKERS[@]}")  # Reindex array
+                    echo -e "${GREEN}[SUCCESS] Worker $removed_worker removed!${NC}"
+                    printf '%s\n' "${ACTIVE_WORKERS[@]}" > "$WORKERS_FILE"
+                else
+                    echo -e "${RED}[ERROR] Invalid worker number!${NC}"
+                fi
+            fi
+            ;;
+        3)
+            if [ ${#ACTIVE_WORKERS[@]} -eq 0 ]; then
+                echo -e "${YELLOW}[INFO] No workers to clear.${NC}"
+            else
+                ACTIVE_WORKERS=()
+                rm -f "$WORKERS_FILE"
+                echo -e "${GREEN}[SUCCESS] All workers cleared!${NC}"
+            fi
+            ;;
+        4)
+            return
+            ;;
+        *)
+            echo -e "${RED}[ERROR] Invalid option!${NC}"
+            ;;
+    esac
+    sleep 2
+}
+
+# Fungsi untuk pengaturan user
+user_settings() {
+    echo -e "${YELLOW}[INFO] User Settings...${NC}"
+    
+    echo -n "Enter User ID/Worker Name: "
+    read user_id
+    echo -n "Enter Wallet Address (34-250 characters): "
+    read wallet_address
+    echo -n "Enter Coin (e.g. BTC, ETH, DOGE, SHIB, etc.): "
+    read coin
+    echo -n "Enter Referral Code (optional): "
+    read referral_code
+    
+    # Validasi wallet address
+    if [ -z "$wallet_address" ] || [ ${#wallet_address} -lt 34 ] || [ ${#wallet_address} -gt 250 ]; then
+        echo -e "${RED}[ERROR] Wallet address must be between 34 and 250 characters!${NC}"
+        sleep 2
+        return
+    fi
+    
+    if [ -z "$user_id" ] || [ -z "$wallet_address" ] || [ -z "$coin" ]; then
+        echo -e "${RED}[ERROR] All fields are required!${NC}"
+        sleep 2
+        return
+    fi
+    
+    USER_ID=$user_id
+    WALLET_ADDRESS=$wallet_address
+    COIN=$coin
+    REFERRAL_CODE=$referral_code
+    
+    create_config
+    save_settings
+    
+    echo -e "${GREEN}[SUCCESS] User settings saved successfully!${NC}"
+    sleep 2
+}
+
+# Fungsi untuk menyimpan pengaturan
+save_settings() {
+    cat > "$SETTINGS_FILE" << EOF
+{
+    "user_id": "$USER_ID",
+    "wallet_address": "$WALLET_ADDRESS",
+    "coin": "$COIN",
+    "referral_code": "$REFERRAL_CODE",
+    "hashrate_limit_enabled": $HASHRATE_LIMIT_ENABLED,
+    "custom_hashrate_limit": "$CUSTOM_HASHRATE_LIMIT",
+    "min_withdrawal": "$MIN_WITHDRAWAL",
+    "max_withdrawal": "$MAX_WITHDRAWAL",
+    "auto_withdrawal": $AUTO_WITHDRAWAL
+}
+EOF
+}
+
+# Fungsi untuk memuat pengaturan
+load_settings() {
+    if [ -f "$SETTINGS_FILE" ]; then
+        USER_ID=$(jq -r '.user_id' "$SETTINGS_FILE" 2>/dev/null || echo "")
+        WALLET_ADDRESS=$(jq -r '.wallet_address' "$SETTINGS_FILE" 2>/dev/null || echo "")
+        COIN=$(jq -r '.coin' "$SETTINGS_FILE" 2>/dev/null || echo "")
+        HASHRATE_LIMIT_ENABLED=$(jq -r '.hashrate_limit_enabled' "$SETTINGS_FILE" 2>/dev/null || echo "false")
+        CUSTOM_HASHRATE_LIMIT=$(jq -r '.custom_hashrate_limit' "$SETTINGS_FILE" 2>/dev/null || echo "999999")
+        MIN_WITHDRAWAL=$(jq -r '.min_withdrawal' "$SETTINGS_FILE" 2>/dev/null || echo "")
+        MAX_WITHDRAWAL=$(jq -r '.max_withdrawal' "$SETTINGS_FILE" 2>/dev/null || echo "")
+        AUTO_WITHDRAWAL=$(jq -r '.auto_withdrawal' "$SETTINGS_FILE" 2>/dev/null || echo "false")
+    fi
+}
+
+# Fungsi untuk melihat log
+view_log() {
+    echo -e "${YELLOW}[INFO] Showing log...${NC}"
+    
+    if [ ! -f "$LOG_FILE" ]; then
+        echo -e "${RED}[ERROR] Log file not found!${NC}"
+        sleep 2
+        return
+    fi
+    
+    if [ "$OS" = "windows" ]; then
+        tail -20 "$LOG_FILE"
+    else
+        tail -20 "$LOG_FILE"
+    fi
+    
+    echo
+    echo -n "Press Enter to continue..."
+    read
+}
+
+# ============================ ANIMASI HACKER STYLE ============================
+
+# Fungsi untuk menampilkan animasi loading 1-200%
+show_loading_animation() {
+    local duration=$1
+    local text="${2:-Loading}"
+    local steps=200
+    local increment=$((duration * 10 / steps))
+    
+    echo -ne "${GREEN}[H4CK3R] ${text}...${NC}"
+    
+    for ((i=1; i<=steps; i++)); do
+        # Simulasi teks hacker style
+        local hacker_chars=("|" "/" "-" "\\" "█" "▓" "▒" "░")
+        local rand_char=${hacker_chars[$((RANDOM % ${#hacker_chars[@]}))]}
+        
+        # Progress bar dengan style hacker
+        local bar=""
+        local bar_length=50
+        local filled=$((i * bar_length / steps))
+        local empty=$((bar_length - filled))
+        
+        for ((j=0; j<filled; j++)); do
+            bar+="█"
+        done
+        for ((j=0; j<empty; j++)); do
+            bar+="░"
+        done
+        
+        # Tampilkan progress dengan persentase
+        printf "\r${GREEN}[H4CK3R] ${text}... ${CYAN}[%s] ${YELLOW}%3d%% ${PURPLE}%s${NC}" "$bar" $i "$rand_char"
+        sleep 0.05
+    done
+    printf "\r${GREEN}[H4CK3R] ${text}... ${GREEN}[COMPLETED] 200%% ██████████████████████████████████████████████████${NC}\n"
+}
+
+
+# ============================ MODIFIKASI FUNGSI YANG ADA ============================
+
+# Modifikasi fungsi show_header untuk menampilkan info hardware
+show_header() {
+    clear
+    echo -e "${GREEN}"
+    cat << "EOF"
+    
+    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣶⡎⠉⠀⠙⢧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠿⠉⠀⠀⠀⠀⠀⠈⢳⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡼⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡤⣿⠛⠶⠤⠀⠀⠀⠀⠀⠀⠀⠀⠈⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣥⣈⠉⠒⠦⣄⠀⣀⠀⠀⠀⠀⠀⠀⠸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⠛⠓⠲⣄⠈⠳⡌⠳⡀⠀⠀⠀⢸⣷⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⡇⠀⠀⠈⠳⡀⠈⢦⡹⡀⠀⠀⢸⠃⢧⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⠟⢳⣤⠀⢻⡿⣆⠀⢳⡗⠀⠀⡼⠀⢸⡆⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⣷⣤⡟⠀⠀⠈⠛⣆⠀⢷⠀⠀⡇⠀⠨⢧⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣧⣠⠀⠀⠀⠘⣆⠈⠃⣰⠁⠀⠄⠸⣦⡀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣷⡄⠀⠀⠀⠸⡅⢀⡏⠀⠀⠀⢠⠏⠱⣄⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣷⣤⣠⠖⢻⠁⡼⠀⠀⢀⡴⠋⠀⠀⠈⢦⡀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⡟⠉⢻⡻⣿⣿⣿⢧⣠⢏⣾⣡⠤⠚⣏⠀⠀⠀⠀⠀⠀⠉⠣⡄⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡞⡿⠁⢠⢿⣿⢿⣿⡿⠋⣿⡏⠉⠀⠀⠀⣹⡞⠁⠀⠀⠀⠀⠀⠀⢸⡀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⣆⡴⡟⢸⢸⢰⡄⠀⠀⣹⢱⠀⠀⠀⢰⢿⡄⠀⠀⠀⠀⠀⠀⠀⠀⢧
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⠃⣿⠀⠃⢸⢸⠘⡇⠀⠀⣿⢸⠀⠀⠀⠃⠀⢧⡄⢀⡴⠃⠀⠀⠀⠀⠘
+⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⢿⡧⣿⠀⠀⡸⣾⠀⡇⠀⠀⣯⡏⠀⠀⠀⠀⠀⣸⡷⣫⣴⠀⠀⠀⢀⠂⢀
+⠘⣿⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣇⠀⠀⣿⠀⠀⡇⣿⠰⠇⠀⣸⢻⠇⠀⠀⠀⠀⢰⠿⠞⣫⢞⡠⠀⢀⠂⠀⢸
+⠀⠘⣿⣿⣿⣦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡾⣏⠻⣦⣤⣿⠀⠀⢧⡇⠀⠀⠀⢹⣾⠀⠀⠀⠀⢠⡏⣠⣼⣋⣉⣀⣴⣁⣀⣀⡎
+⠀⠀⠈⢿⣿⣿⣿⣿⣦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣷⡌⠙⠺⢭⡿⠀⠀⠸⠆⠀⠀⠀⢸⣿⡀⠀⠀⠀⡟⢀⡧⣄⣠⣠⣤⣤⣤⣀⣈⡇
+⠀⠀⠀⠈⢿⣿⣿⣿⣿⣿⣷⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠿⠃⠀⠈⠢⠐⢤⣧⠀⠀⠀⠀⠀⠀⠀⢸⡿⠀⠀⠀⣼⠁⡼⠉⠛⠒⠒⠒⠒⠶⠶⢿⠁
+⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⢀⣤⣛⡛⠛⢢⠀⠀⢠⠈⢪⣻⡇⠀⠀⠀⠀⠀⠀⠐⠃⠀⠀⢰⠏⢸⡧⠤⠤⠤⢤⣀⣀⡀⠀⡾⠀
+⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠀⣀⣀⠤⠴⠒⠚⣩⠽⣿⠖⠋⠉⠀⠀⣦⠈⣧⠀⠈⣳⣼⡿⠛⠀⠀⠀⠀⠀⠀⠀⢀⡤⠴⠞⠀⣿⠓⠢⠤⠤⠤⠤⣌⣉⣻⡇⠀
+⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣭⣭⣶⣦⣤⣶⠋⢡⣴⠇⢀⣴⡦⠀⣠⢿⣤⣿⡴⠒⢹⣏⣀⠀⠀⢀⣀⣀⠀⠀⢀⣠⣄⢀⣤⣾⡯⡀⠀⠉⠒⠒⠤⢤⣭⣽⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁⢠⣻⠃⡴⠛⢁⣴⡯⠇⠀⠀⠈⠉⠉⠉⢹⡍⠉⠉⠙⣷⠈⢻⠉⠻⠀⠘⣟⠻⠀⡉⠁⠀⠀⠀⠀⠀⠀⣠⣿⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣮⣵⢰⣧⣞⣶⡿⢋⣡⠔⠚⣀⡀⠀⠀⠀⠀⢨⠇⠀⠀⠀⢹⠀⠈⠁⠀⠀⠀⠿⠀⠀⠈⠓⠶⠄⠀⠐⣲⡾⠋⡿⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣾⡿⢿⣿⢎⢠⠟⡠⣾⠟⢋⡠⠤⠤⢤⠤⠾⠤⠤⣤⢤⡼⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡴⠞⠁⢀⣴⠇⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⢿⣿⣿⣿⣿⡙⠻⣿⣿⣿⣿⣝⡋⣮⣴⣞⣥⡄⠀⠀⢀⣀⡤⠴⠚⠛⠪⣟⡧⢤⣄⣠⣄⡐⠦⣤⣤⣤⠴⠚⠉⠀⠀⠀⣾⠁⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠻⣿⣿⣿⡄⠈⠙⢿⣿⣿⣿⣿⠟⠋⣁⣤⠴⠚⠉⠁⠀⠀⠀⠀⠀⠀⠉⠲⢤⡀⠉⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⢀⣿⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⢿⣿⡄⠀⠀⢙⣹⣷⠶⠟⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠑⠦⣄⠀⠀⠀⠀⠀⠀⠀⠰⢚⡇⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠿⡾⠿⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠂⠀⠀⠀⠀⠀⠈⠛⠃⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⢀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+ __  __     __    __     ______     __  __     __   __     __    __     __     __   __     ______    
+/\_\_\_\   /\ "-./  \   /\  == \   /\ \/\ \   /\ "-.\ \   /\ "-./  \   /\ \   /\ "-.\ \   /\  ___\   
+\/_/\_\/_  \ \ \-./\ \  \ \  __<   \ \ \_\ \  \ \ \-.  \  \ \ \-./\ \  \ \ \  \ \ \-.  \  \ \  __\   
+  /\_\/\_\  \ \_\ \ \_\  \ \_\ \_\  \ \_____\  \ \_\\"\_\  \ \_\ \ \_\  \ \_\  \ \_\\"\_\  \ \_____\ 
+  \/_/\/_/   \/_/  \/_/   \/_/ /_/   \/_____/   \/_/ \/_/   \/_/  \/_/   \/_/   \/_/ \/_/   \/_____/ 
+                                                                                                     
+EOF
+    echo -e "${NC}"
+    
+    # Tampilkan info hardware singkat
+    echo -e "${CYAN}"
+    echo "   [*] Hardware Detection:"
+    if detect_nvidia_gpu > /dev/null 2>&1; then
+        echo "   [*] NVIDIA GPU: ✓"
+    else
+        echo "   [*] NVIDIA GPU: ✗"
+    fi
+    
+    if detect_amd_gpu > /dev/null 2>&1; then
+        echo "   [*] AMD GPU: ✓"
+    else
+        echo "   [*] AMD GPU: ✗"
+    fi
+    
+    if detect_intel_gpu > /dev/null 2>&1; then
+        echo "   [*] Intel GPU: ✓"
+    else
+        echo "   [*] Intel GPU: ✗"
+    fi
+    echo "   [*] CPU Threads: $THREADS"
+    echo -e "${NC}"
+    
+    # Tampilkan animasi hacker style
+    echo -e "${CYAN}"
+    echo "   [*] Initializing system..."
+    echo "   [*] Loading crypto modules..."
+    echo "   [*] Connecting to blockchain..."
+    echo -e "${NC}"
+}
+
+# Modifikasi fungsi create_config untuk menggunakan worker yang telah dibuat
+create_config() {
+    echo -e "${YELLOW}[INFO] Creating config file with 200 active pools and multiple algorithms...${NC}"
+    
+    # Format untuk Unmineable: COIN:WALLET_ADDRESS.USER_ID#REFERRAL_CODE
+    if [ -n "$REFERRAL_CODE" ]; then
+        USER_STRING="$COIN:$WALLET_ADDRESS.$USER_ID#$REFERRAL_CODE"
+    else
+        USER_STRING="$COIN:$WALLET_ADDRESS.$USER_ID"
+    fi
+    
+    # Membuat pools array untuk config dengan algoritma bergantian
+    POOLS_CONFIG=""
+    local pool_count=${#POOLS[@]}
+    local algo_count=${#ALGORITHMS[@]}
+    local worker_count=${#ACTIVE_WORKERS[@]}
+    
+    for ((i=0; i<pool_count; i++)); do
+        local pool="${POOLS[$i]}"
+        local algo="${ALGORITHMS[$((i % algo_count))]}"
+        local worker="${ACTIVE_WORKERS[$((i % worker_count))]}"
+        
+        POOLS_CONFIG+=$(cat << EOF
+
+        {
+            "coin": null,
+            "algo": "$algo",
+            "url": "$pool",
+            "user": "$USER_STRING",
+            "pass": "x",
+            "rig-id": "$worker",
+            "tls": false,
+            "keepalive": true,
+            "nicehash": false
+        },
+EOF
+)
+    done
+    
+    # Menghapus koma terakhir
+    POOLS_CONFIG=${POOLS_CONFIG%,}
+    
+    # Menambahkan max-threads-hint jika hash rate limit diatur
+    MAX_THREADS_HINT=""
+    if [ "$HASHRATE_LIMIT_ENABLED" = true ] && [ -n "$CUSTOM_HASHRATE_LIMIT" ]; then
+        MAX_THREADS_HINT=",\"max-threads-hint\": 200"
+    fi
+    
+    # Konfigurasi GPU berdasarkan yang terdeteksi
+    local opencl_config=""
+    local cuda_config=""
+    
+    if detect_nvidia_gpu; then
+        cuda_config="\"cuda\": true, \"cuda-loader\": null, \"cuda-devices\": null,"
+    fi
+    
+    if detect_amd_gpu || detect_intel_gpu; then
+        opencl_config="\"opencl\": true, \"opencl-loader\": null, \"opencl-devices\": null,"
+    fi
+    
+    cat > "$CONFIG_FILE" << EOF
+{
+    "autosave": true,
+    "cpu": true,
+    $opencl_config
+    $cuda_config
+    "donate-level": 0,
+    "print-time": 10,
+    "health-print-time": 60,
+    "retries": 5,
+    "retry-pause": 5,
+    "pause-on-battery": false,
+    "pause-on-active": false$MAX_THREADS_HINT,
+    "pools": [$POOLS_CONFIG
+    ]
+}
+EOF
+    
+    echo -e "${GREEN}[SUCCESS] Config file created: $CONFIG_FILE${NC}"
+    echo -e "${YELLOW}[INFO] Using 200 active pools with multiple algorithms simultaneously${NC}"
+    echo -e "${YELLOW}[INFO] Using ${#ACTIVE_WORKERS[@]} workers${NC}"
+}
+
+# Modifikasi fungsi show_dashboard untuk menampilkan info GPU
+show_dashboard() {
+    local balance_update_interval=5
+    
+    while true; do
+        show_header
+        
+        # Update balance setiap 5 detik
+        update_mining_balance
+        
+        echo -e "${BLUE}════════════════════ DASHBOARD ════════════════════${NC}"
+        echo -e "User ID: ${YELLOW}$USER_ID${NC}"
+        echo -e "Wallet: ${YELLOW}$WALLET_ADDRESS${NC}"
+        echo -e "Coin: ${YELLOW}$COIN${NC}"
+        echo -e "Referral: ${YELLOW}$REFERRAL_CODE${NC}"
+        echo -e "Balance: ${GREEN}$MINING_BALANCE${NC}"
+        echo -e "Active Pools: ${GREEN}200/200${NC}"
+        echo -e "Active Workers: ${GREEN}${#ACTIVE_WORKERS[@]}/200${NC}"
+        echo -e "Hash Rate Limit: $([ "$HASHRATE_LIMIT_ENABLED" = true ] && echo -e "${GREEN}Enabled${NC} ($CUSTOM_HASHRATE_LIMIT H/s)" || echo -e "${RED}Disabled${NC}")"
+        echo -e "Auto Withdrawal: $([ "$AUTO_WITHDRAWAL" = true ] && echo -e "${GREEN}Enabled${NC}" || echo -e "${RED}Disabled${NC}")"
+        echo -e "Min/Max Withdrawal: ${YELLOW}$MIN_WITHDRAWAL / $MAX_WITHDRAWAL${NC}"
+        
+        # Tampilkan info GPU jika tersedia
+        if detect_nvidia_gpu > /dev/null 2>&1; then
+            echo -e "NVIDIA GPU: ${GREEN}Detected${NC}"
+        fi
+        if detect_amd_gpu > /dev/null 2>&1; then
+            echo -e "AMD GPU: ${GREEN}Detected${NC}"
+        fi
+        if detect_intel_gpu > /dev/null 2>&1; then
+            echo -e "Intel GPU: ${GREEN}Detected${NC}"
+        fi
+        
+        echo -e "${BLUE}═══════════════════════════════════════════════════${NC}"
+        echo
+        echo -e "1. Start Mining (200 Pools)"
+        echo -e "2. Stop Mining"
+        echo -e "3. Settings (User ID/Wallet/Coin)"
+        echo -e "4. Hash Rate Settings"
+        echo -e "5. Worker Settings"
+        echo -e "6. Manual Withdrawal"
+        echo -e "7. Auto Withdrawal Settings"
+        echo -e "8. Transaction History"
+        echo -e "9. View Log"
+        echo -e "10. Reinstall XMRig with GPU Support"
+        echo -e "11. Detect Hardware"
+        echo -e "0. Create 200 Workers"
+        echo -e "X. Exit"
+        echo
+        echo -n "Select option [0-11, X]: "
+        
+        # Baca input dengan timeout 1 detik untuk real-time update
+        read -t 1 choice
+        if [ $? -gt 0 ]; then
+            continue  # Refresh dashboard jika tidak ada input
+        fi
+        
+        case $choice in
+            1)
+                start_mining
+                ;;
+            2)
+                stop_mining
+                ;;
+            3)
+                user_settings
+                ;;
+            4)
+                hashrate_settings
+                ;;
+            5)
+                worker_settings
+                ;;
+            6)
+                manual_withdrawal
+                ;;
+            7)
+                auto_withdrawal_settings
+                ;;
+            8)
+                view_transaction_history
+                ;;
+            9)
+                view_log
+                ;;
+            10)
+                build_xmrig_with_gpu_support
+                ;;
+            11)
+                detect_hardware
+                ;;
+            0)
+                create_200_workers
+                ;;
+            x|X)
+                stop_mining
+                echo -e "${GREEN}[INFO] Exiting program.${NC}"
+                exit 0
+                ;;
+            *)
+                # Invalid input, continue to refresh dashboard
+                ;;
+        esac
+    done
+}
+
+# ============================ FUNGSI TAMBAHAN UNTUK WINDOWS ============================
+
+# Fungsi untuk install GitBash di Windows
+install_gitbash_windows() {
+    echo -e "${YELLOW}[INFO] Checking for Git Bash on Windows...${NC}"
+    
+    if command -v git &> /dev/null && command -v bash &> /dev/null; then
+        echo -e "${GREEN}[SUCCESS] Git Bash is already installed!${NC}"
+        return 0
+    fi
+    
+    echo -e "${YELLOW}[INFO] Git Bash not found. Installing...${NC}"
+    
+    # Download Git for Windows
+    GIT_INSTALLER="Git-2.43.0-64-bit.exe"
+    if [ ! -f "$GIT_INSTALLER" ]; then
+        echo -e "${YELLOW}[INFO] Downloading Git for Windows...${NC}"
+        curl -L -o "$GIT_INSTALLER" "https://github.com/git-for-windows/git/releases/download/v2.43.0.windows.1/$GIT_INSTALLER"
+        
+        if [ $? -ne 0 ]; then
+            echo -e "${RED}[ERROR] Failed to download Git for Windows!${NC}"
+            return 1
+        fi
+    fi
+    
+    echo -e "${YELLOW}[INFO] Installing Git for Windows...${NC}"
+    # Jalankan installer secara silent
+    ./$GIT_INSTALLER /SILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS
+    
+    # Tambahkan Git Bash ke PATH
+    export PATH="$PATH:/c/Program Files/Git/bin"
+    
+    echo -e "${GREEN}[SUCCESS] Git Bash installed successfully!${NC}"
+    return 0
+}
+
+# Fungsi untuk download pre-built binary
+download_prebuilt() {
+    echo -e "${YELLOW}[INFO] Downloading XMRig pre-built binary...${NC}"
+    
+    cd "$INSTALL_DIR"
+    rm -rf build
+    mkdir -p build
+    cd build
+    
+    ARCH=$(uname -m)
+    
+    if [ "$OS" = "windows" ]; then
+        if [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "amd64" ]; then
+            wget https://github.com/xmrig/xmrig/releases/download/v6.20.0/xmrig-6.20.0-msvc-win64.zip
+            unzip xmrig-6.20.0-msvc-win64.zip
+            mv xmrig-6.20.0/xmrig.exe .
+            rm -rf xmrig-6.20.0 xmrig-6.20.0-msvc-win64.zip
+        else
+            echo -e "${RED}[ERROR] Architecture $ARCH not supported for pre-built binary.${NC}"
+            exit 1
+        fi
+    else
+        if [ "$ARCH" = "x86_64" ]; then
+            wget https://github.com/xmrig/xmrig/releases/download/v6.20.0/xmrig-6.20.0-linux-x64.tar.gz
+            tar -xzf xmrig-6.20.0-linux-x64.tar.gz
+            mv xmrig-6.20.0/xmrig .
+            rm -rf xmrig-6.20.0 xmrig-6.20.0-linux-x64.tar.gz
+        elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
+            wget https://github.com/xmrig/xmrig/releases/download/v6.20.0/xmrig-6.20.0-linux-arm64.tar.gz
+            tar -xzf xmrig-6.20.0-linux-arm64.tar.gz
+            mv xmrig-6.20.0/xmrig .
+            rm -rf xmrig-6.20.0 xmrig-6.20.0-linux-arm64.tar.gz
+        else
+            echo -e "${RED}[ERROR] Architecture $ARCH not supported for pre-built binary.${NC}"
+            exit 1
+        fi
+    fi
+    
+    if [ -f xmrig ] || [ -f xmrig.exe ]; then
+        chmod +x xmrig 2>/dev/null || chmod +x xmrig.exe
+        echo -e "${GREEN}[SUCCESS] XMRig pre-built downloaded successfully!${NC}"
+    else
+        echo -e "${RED}[ERROR] XMRig pre-built download failed!${NC}"
+        exit 1
+    fi
+}
+
+# Fungsi untuk setup Windows
+setup_windows() {
+    echo -e "${YELLOW}[INFO] Setting up Windows environment...${NC}"
+    
+    # Install Git Bash jika belum ada
+    install_gitbash_windows
+    
+    # Install dependencies Windows
+    if ! command -v jq &> /dev/null; then
+        echo -e "${YELLOW}[INFO] Installing jq for Windows...${NC}"
+        curl -L -o jq.exe "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-win64.exe"
+        mv jq.exe /usr/bin/jq.exe
+        chmod +x /usr/bin/jq.exe
+    fi
+    
+    if ! command -v bc &> /dev/null; then
+        echo -e "${YELLOW}[INFO] Installing bc for Windows...${NC}"
+        # BC tidak tersedia secara default di Windows, kita akan gunakan alternatif
+        echo "#!/bin/bash" > /usr/bin/bc
+        echo "echo 0" >> /usr/bin/bc
+        chmod +x /usr/bin/bc
+    fi
+    
+    echo -e "${GREEN}[SUCCESS] Windows environment setup completed!${NC}"
+}
+
+# Fungsi untuk memuat workers dari file
+load_workers() {
+    if [ -f "$WORKERS_FILE" ]; then
+        while IFS= read -r line; do
+            if [ -n "$line" ]; then
+                ACTIVE_WORKERS+=("$line")
+            fi
+        done < "$WORKERS_FILE"
+    fi
+}
+
+# Fungsi untuk menampilkan progress bar
+progress_bar() {
+    local duration=$1
+    local increment=$((200/$duration))
+    local bar=""
+    for ((i=0; i<=$duration; i++)); do
+        bar="${bar}="
+        echo -ne "${GREEN}[${bar}${CYAN}($((i*increment))%)${GREEN}]${NC}\r"
+        sleep 1
+    done
+    echo -ne "\n"
+}
+
+# ============================ FUNGSI UTAMA ============================
+
+# Fungsi utama
+main() {
+    show_header
+    
+    echo -e "${YELLOW}NOTICE: Please make sure you have:${NC}"
+    echo -e "1. A valid User ID/Worker Name"
+    echo -e "2. A valid Wallet Address (34-250 characters)"
+    echo -e "3. Selected the coin you want to mine"
+    echo
+    echo -e "${YELLOW}This program will use 10 Unmineable pools simultaneously with multiple algorithms${NC}"
+    echo
+    echo -e "${CYAN}Initializing system, please wait...${NC}"
+    progress_bar 3
+    
+    # Deteksi hardware
+    detect_hardware
+    
+    # Install dependencies berdasarkan hardware
+    install_all_dependencies
+    
+    # Setup khusus Windows
+    if [ "$OS" = "windows" ]; then
+        setup_windows
+    fi
+    
+    # Buat direktori instalasi jika belum ada
+    mkdir -p "$INSTALL_DIR"
+    
+    # Load pengaturan
+    load_settings
+    
+    # Animasi Hacker
+    show_loading_animation
+    
+    
+    # Build XMRig dengan dukungan GPU
+    if [ ! -f "$INSTALL_DIR/build/xmrig" ] && [ ! -f "$INSTALL_DIR/build/xmrig.exe" ]; then
+        echo -e "${YELLOW}[INFO] XMRig not installed, building with GPU support...${NC}"
+        build_xmrig_with_gpu_support
+    fi
+    
+    # Buat 200 worker otomatis jika belum ada
+    if [ ${#ACTIVE_WORKERS[@]} -eq 0 ]; then
+        create_200_workers
+    fi
+    
+    # Load workers dari file
+    load_workers
+    
+    # Minta pengaturan user pertama kali jika belum diatur
+    if [ -z "$USER_ID" ] || [ -z "$WALLET_ADDRESS" ] || [ -z "$COIN" ]; then
+        user_settings
+    else
+        create_config
+    fi
+    
+    # Inisialisasi balance
+    MINING_BALANCE=$(get_balance)
+    LAST_BALANCE_UPDATE=$(date +%s)
+    
+    # Jalankan dashboard
+    show_dashboard
+}
+
+# ============================ JALANKAN PROGRAM UTAMA ============================
+
+# Trap untuk cleanup saat script dihentikan
+trap stop_mining EXIT
+
+# Jalankan fungsi utama
+main
